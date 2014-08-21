@@ -1,12 +1,38 @@
 body {
-  background-color: #222;
+  background-color: #AAA;
+}
+
+div#header
+{
+    margin: 20px 30px auto 30px;
+    height: 50px;
+    background-color: White;
 }
 
 div#main {
   width: 600px;
-  margin: 50px auto;
-  background-color: #EEE;
-  padding: 10%;
+  margin: 30px auto auto 80px;
+  background-color: White;
+  padding: 15px 10px;
+}
+
+div#input
+{
+    background-color: #CCC;
+    margin: 20 30;
+    font-weight: bolder;
+    padding: 5px;
+    width: 300px;
+}
+
+form#form
+{
+    margin:20px 20px 0px 20px;
+}
+
+input#input_button
+{
+    text-align:center;
 }
 
 h2#result {
@@ -14,3 +40,5 @@ h2#result {
   background-color: #FFF;
   padding: 10px 20px;
 }
+
+p.center{text-align:center;}
