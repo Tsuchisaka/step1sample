@@ -1,24 +1,26 @@
 <html>
 <head>
   <title>ToDo検索</title>
+  <meta charset="UTF-8" />
   <link rel="stylesheet" href="default.css">
-  <script language="javascript" src="birthday.js"></script>
+  <script language="javascript" src="header.js"></script>
+  <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+  <script language="javascript" src="ToDoList.js"></script>
 </head>
 <body>
     <script>header();</script>
   <div id="main">
     <h1>○○の宿題リスト</h1>
-    <!-- <h2 style="display: none" id="result"></h2> -->
     <div id="input">
     あたらしいToDoをつくる
-    <form method="post" onsubmit="calculateBirthday(); return false;" id="form">
-      名前<input type="text" id="year" name="name" size="30"></br>
-      期限<input type="text" id="month" name="limit" size="30"></br>
-      <div style="text-align:center"><input type="submit" value="ToDoの追加"></div>
+    <form id="form">
+      名前<input type="text" id="formText_name" name="name" size="30" maxlength="20"></br>
+      期限<input type="text" id="formText_limit" name="limit" size="30" maxlength="20"></br>
+      <div style="text-align:center"><input type="button" value="ToDoの追加" id="inputButton"></div>
     </form>
     </div>
   </div>
 
-  <script type="text/javascript" src="birthday.js"></script>
+  <div id="list"></div>
 </body>
 </html>
