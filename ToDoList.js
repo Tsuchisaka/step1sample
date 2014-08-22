@@ -13,13 +13,15 @@ function clickButton() {
 
 function saveText() {
     //ToDoの名前を期間をローカルストレージに保存
-    var name = escapeText(("input#formText_name").val());
-    var limit = escapeText($("input#formText_limit").val());
-    if (checkName(name) != true) {
+    var name = $("input#formText_name");
+    var limit = $("input#formText_limit");
+	name.val(escapeText(name.val()));
+	limit.val(escapeText(limit.val()));
+    if (checkName(name.val()) != true) {
     }
-    else if (checkDate(limit) != true) {
+    else if (checkDate(limit.val()) != true) {
     }
-    var todo = [name, limit];
+    var todo = [name.val(), limit.val()];
     JSON.stringify(todo);
     localStorage.setItem("todolist", todo);
 }
@@ -45,9 +47,10 @@ function escapeText(text) {
 
 // 入力チェックを行う
 function checkName(text) {
-    // 文字数が0または20以上は不可
-    if (0 === text.length || 20 < text.length) {
+    // 文字数が0または30以上は不可
+    if (0 === text.length || 30 < text.length) {
         alert("文字数は1〜20字にしてください");
+		console.log("checkName error");
         return false;
     }
 
@@ -68,5 +71,22 @@ function checkName(text) {
 }
 
 function checkDate(text){
-return true;
+	//textの半角スラッシュを全角スラッシュに置き換える
+	var str = text.replace(/\u002f/g, "\uff0f");
+	
+	// 文字数が0または30以上は不可
+    if (0 === str.length || 30 < str.length) {
+        alert("文字数は1〜20字にしてください");
+        return false;
+    }
+	
+	console.log(str);
+	// 文字が日付でなければ不可
+	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)){
+		
+	}else{
+		alert("おかしな日付です");
+		return false;
+	}
+	return true;
 }
