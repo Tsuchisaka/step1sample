@@ -3,12 +3,19 @@ $(loaded);
 
 function loaded() {
     //ボタンタグをクリックしたときの動作を指定
-    $("input#inputButton").click(clickButton);
+    $("input#inputButton").click(click_inputButton);
+	$("input#resetButton").click(click_resetButton);
 }
 
-function clickButton() {
+function click_inputButton() {
     saveText();
     showText();
+}
+
+function click_resetButton(){
+	localStorage.clear();
+	console.log("ResetButton clicked.");
+	showText();
 }
 
 function saveText() {
@@ -18,26 +25,51 @@ function saveText() {
 	name.val(escapeText(name.val()));
 	limit.val(escapeText(limit.val()));
     if (checkName(name.val()) != true) {
+		return;
     }
     else if (checkDate(limit.val()) != true) {
+		return;
     }
     var todo = [name.val(), limit.val()];
-    JSON.stringify(todo);
-    localStorage.setItem("todolist", todo);
+	console.log(todo);
+    todo = JSON.stringify(todo);
+	console.log(todo);
+    localStorage.setItem(getToDoListKey(), todo);
+}
+
+function getToDoListKey(){
+	return localStorage.length;
 }
 
 function showText() {
     // すでにある要素を削除する
-    var list = $("#list")
+    var list = $("#list");
     list.children().remove();
     // ローカルストレージに保存された値すべてを要素に追加する
     var key, value, html = [];
     for (var i = 0, len = localStorage.length; i < len; i++) {
         key = localStorage.key(i);
         value = localStorage.getItem(key);
-        html.push("<p>" + value + "</p>");
+        writeToDoListForm(value);
     }
     list.append(html.join(''));
+}
+
+function writeToDoListForm(text){
+	var line = text;
+	var list = $("#list");
+	console.log(line);
+	line = JSON.parse(line);
+	console.log(line);
+	var limit = line[1].split("/");
+	var html = [];
+	html.push('<div id="ListElement"><h1>' + line[0] +'</h1>\n');
+    html.push('<table>\n');
+    html.push('<tr><td>期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td></tr>\n');
+    html.push('<tr><td>作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td></tr>\n');
+    html.push('</table>\n');
+    html.push('</div>\n');
+	list.append(html.join(''));
 }
 
 // 文字をエスケープする
