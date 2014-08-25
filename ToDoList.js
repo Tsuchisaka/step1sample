@@ -5,6 +5,7 @@ function loaded() {
     //ボタンタグをクリックしたときの動作を指定
     $("input#inputButton").click(click_inputButton);
 	$("input#resetButton").click(click_resetButton);
+	showText();
 }
 
 function click_inputButton() {
@@ -65,8 +66,13 @@ function writeToDoListForm(text){
 	var html = [];
 	html.push('<div id="ListElement"><h1>' + line[0] +'</h1>\n');
     html.push('<table>\n');
-    html.push('<tr><td>期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td></tr>\n');
-    html.push('<tr><td>作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td></tr>\n');
+	html.push('<tr>\n');
+    html.push('<td>期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+	html.push('<td rowspan=2><input type="button" value="未完了" id="completeButton" class="button2"></td>');
+	html.push('</tr>\n');
+	html.push('<tr>\n');
+    html.push('<td>作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+	html.push('</tr>\n');
     html.push('</table>\n');
     html.push('</div>\n');
 	list.append(html.join(''));
