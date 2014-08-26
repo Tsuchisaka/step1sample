@@ -37,9 +37,20 @@ div#main {
 
 .button2{
 	height:100%;
-	weight:80px;
+	width:100px;
 	font-weight:bold;
-	background-color:#FDFFBD;
+	background-color:#FFA4A4;
+	/* 角丸の指定 */
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.button3{
+	height:100%;
+	width:100px;
+	font-weight:bold;
+	background-color:#A4E0FF;
 	/* 角丸の指定 */
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

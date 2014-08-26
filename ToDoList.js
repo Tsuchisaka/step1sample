@@ -19,6 +19,16 @@ function click_resetButton(){
 	showText();
 }
 
+function click_completeButton(buttonID){
+	console.log("ID=" + buttonID);
+	var button = $("input#" + buttonID);
+	if(button.val() === "未完了"){
+		button.val("完了");
+	}else{
+		button.val("未完了");
+	}
+}
+
 function saveText() {
     //ToDoの名前を期間をローカルストレージに保存
     var name = $("input#formText_name");
@@ -70,6 +80,8 @@ function writeToDoListForm(text){
 	var limit = line[1].split("/");
 	var inputday = line[2].split("/");
 	var html = [];
+	var id = "completeButton/" + line[2];
+	id = id.replace(/\u002f/g, "\uff0f");
 	html.push('<div id="ListElement">\n');
     html.push('<table class="table">\n');
 	html.push('<colgroup>\n');
@@ -79,7 +91,7 @@ function writeToDoListForm(text){
 	html.push('</colgroup>\n');
 	html.push('<tr>\n');
 	html.push('<td colspan = 2 class = "TodoName">' + line[0] + '</td>');
-	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="completeButton" class="button2"></td>');
+	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="' + id + '" class="button2"></td>');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
     html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
@@ -90,6 +102,30 @@ function writeToDoListForm(text){
     html.push('</table>\n');
     html.push('</div>\n');
 	list.append(html.join(''));
+	console.log("ID=" + id);
+	var button = document.getElementById(id);
+	console.log(button.value);
+	button.onclick = function(){
+		var key, value;
+		for (var i = 0, len = localStorage.length; i < len; i++) {
+			key = localStorage.key(i);
+			value = JSON.parse(localStorage.getItem(key));
+			if(("completeButton/" + value[2]) == id){
+				break;
+			}
+		}
+		console.log("完了ボタン clicked.");
+		if(button.value == "未完了"){
+			button.value = "完了"; 
+			button.className = "button3";
+		}else{
+			button.value = "未完了";
+			button.className = "button2";
+		}
+		value[3] = button.value;
+		value = JSON.stringify(value);
+		localStorage.setItem(key,value);
+	}
 }
 
 // 文字をエスケープする
