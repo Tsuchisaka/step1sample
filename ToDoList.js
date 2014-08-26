@@ -5,6 +5,7 @@ function loaded() {
     //ボタンタグをクリックしたときの動作を指定
     $("input#inputButton").click(click_inputButton);
 	$("input#resetButton").click(click_resetButton);
+	oneSecClock();
 	showText();
 }
 
@@ -254,3 +255,19 @@ function checkDate(year, month, day){
 	
 	return 0;
 }
+
+//1秒ごとに呼び出される関数
+function oneSecClock(){
+	showNowTime();
+}
+
+function showNowTime(){
+	var nowTime = $("div#nowTime");
+	nowTime.children().remove();
+	var date = new Date();
+	var datestring = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    var html = [];
+	html.push('<p class="center">' + datestring + '</p>');
+	nowTime.append(html.join(''));
+}
+
