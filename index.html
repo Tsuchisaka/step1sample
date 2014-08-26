@@ -8,9 +8,9 @@
   <script language="javascript" src="ToDoList.js"></script>
 </head>
 <body>
-    <script>header();</script>
+    <!--<script>header();</script>-->
   <div id="main">
-    <h1>○○の宿題リスト</h1>
+    <h1>ToDoリスト</h1>
 	<input type="button" value="ToDoリストのリセット" id="resetButton" class="button0">
     <div id="input">
     新しいToDoを作成する
@@ -18,13 +18,13 @@
 	  <table>
 	  <tr>
         <td class="right">ToDo名</td>
-		<td><input type="text" id="formText_name" name="name" size="50" maxlength="30" class="textBox1"></td>
+		<td><input type="text" id="formText_name" name="name" size="50" maxlength="50" class="textBox1"></td>
 		<td rowspan=2><input type="button" value="ToDoの追加" id="inputButton" class="button1"></td>
 		<td><div id = "error1"></div></td>
 		</tr>
 		<tr>
         <td class="right">期限</td>
-		<td><input type="text" id="formText_limit" name="limit" size="50" maxlength="30" class="textBox1"></td>
+		<td><input type="text" id="formText_limit" name="limit" size="50" maxlength="50" class="textBox1"></td>
 		<td><div id = "error2"></div></td>
         </tr>
 	  </table>

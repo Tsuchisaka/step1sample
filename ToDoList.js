@@ -35,12 +35,14 @@ function saveText() {
     var limit = $("input#formText_limit");
 	name.val(escapeText(name.val()));
 	limit.val(escapeText(limit.val()));
+	var check = true;
     if (checkName(name.val()) != true) {
-		return;
+		check = false;
     }
-    else if (checkLimit(limit.val()) != true) {
-		return;
+    if (checkLimit(limit.val()) != true) {
+		check = false;
     }
+	if(check == false)return;
 	var date = new Date();
 	var datestring = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getHours() + "/" + date.getMinutes() + "/" + date.getSeconds();
     var todo = [name.val(), limit.val(), datestring, "未完了"];
@@ -76,7 +78,7 @@ function showText() {
     }
 	
 	if(localStorage.length <= 0){
-		html.push('<p id = "error0">ToDoが作成されていません。</p>');
+		html.push('<p class = "error0">ToDoが作成されていません。</p>');
 	}
     list.append(html.join(''));
 }
@@ -96,7 +98,7 @@ function writeToDoListForm(text){
     html.push('<table class="table">\n');
 	html.push('<colgroup>\n');
 	html.push('<col style="width:60px;">');
-	html.push('<col style="width:230px;>');
+	html.push('<col style="width:350px;>');
 	html.push('<col style="width:100px;>');
 	html.push('</colgroup>\n');
 	html.push('<tr>\n');
@@ -147,12 +149,13 @@ function escapeText(text) {
 
 // 入力チェックを行う
 function checkName(text) {
-    // 文字数が0または30以上は不可
+	console.log("checkName()");
+    // 文字数が0または50以上は不可
 	var error1 = $("#error1");
 	var html = [];
 	error1.children().remove();
-    if (0 === text.length || 30 < text.length) {
-		html.push('<p class="error">ToDo名は1～30文字の範囲で入力してください。</p>');
+    if (0 === text.length || 50 < text.length) {
+		html.push('<p class="error">ToDo名は1～50文字の範囲で入力してください。</p>');
 		error1.append(html.join(''));
 		console.log("checkName error");
         return false;
@@ -177,15 +180,16 @@ function checkName(text) {
 }
 
 function checkLimit(text){
+	console.log("checkLimit()");
 	var error2 = $("#error2");
 	var html = [];
 	error2.children().remove();
 	//textの半角スラッシュを全角スラッシュに置き換える
 	var str = text.replace(/\u002f/g, "\uff0f");
 	
-	// 文字数が0または30以上は不可
-    if (0 === str.length || 30 < str.length) {
-        html.push('<p class="error">期限は1～30文字の範囲で入力してください。</p>');
+	// 文字数が0または50以上は不可
+    if (0 === str.length || 50 < str.length) {
+        html.push('<p class="error">期限は1～50文字の範囲で入力してください。</p>');
 		error2.append(html.join(''));
         return false;
     }
@@ -193,21 +197,27 @@ function checkLimit(text){
 	console.log(str);
 	// 文字が日付でなければ不可
 	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)){
+		console.log(str + "は日付でした");
 		//日付をチェックする
 		var date = text.split("/");
 		var result = checkDate(date[0],date[1],date[2]);
+		console.log("checkDate(" + date[0] + ", " + date[1] + ", " + date[2] + ") = " + result);
 		if(result < 0){
 			//過去の日付であれば不可
+			console.log("result = -1");
 			html.push('<p class="error">過去の日付です。</p>');
 			error2.append(html.join(''));
 			return false;
 		}else if(result > 0){
 			//存在しない日付であれば不可
+			console.log("result = 1");
 			html.push('<p class="error">存在しない日付です。</p>');
 			error2.append(html.join(''));
 			return false;
 		}
+		console.log("result = 0");
 	}else{
+		console.log(str + "は日付ではありませんでした。");
 		html.push('<p class="error">yyyy/mm/ddの形式で入力してください。</p>');
 		error2.append(html.join(''));
 		return false;
@@ -216,6 +226,8 @@ function checkLimit(text){
 }
 
 function checkDate(year, month, day){
+	console.log("checkDate()に入りました。");
+	console.log("入力された値は" + year + ", " + month + ", " + day + "でした。");
 	var now = new Date();
 	var nowY = now.getFullYear();
 	var nowM = now.getMonth() + 1;
@@ -223,10 +235,13 @@ function checkDate(year, month, day){
 	var lastday = 31;
 	
 	if(month == 2){
+		console.log("2月の最終日を計算します。");
 		lastday = 28 + Math.floor(1 / (year % 4 + 1)) * (1 - Math.floor(1 / (year % 100 + 1))) + Math.floor(1 / (year % 400 + 1));
 	}else if((month < 8 && month %2 == 1) || (month >= 8 && month %2 == 0)){
+		console.log(month + "月の最終日は31日です。");
 		lastday = 31;
 	}else{
+		console.log(month + "月の最終日は30日です。")
 		lastday = 30;
 	}
 	//存在しない日付であれば1を返す

@@ -13,10 +13,11 @@ div#header
     padding: 10px 20px;
 }
 
+/*背景の1つ上の枠（ToDoリストの文字があるところ）の設定 */
 div#main {
   margin: 0px 30px auto 20px;
   background-color: White;
-  padding: 1px 30px;
+  padding: 1px 30px 50px;
   border-style: solid;
   border-width: 0px 2px 2px 1px;
   border-color: #AAA;
@@ -24,6 +25,7 @@ div#main {
 
 .right{text-align:right;}
 
+/*「ToDoの追加」ボタン */
 .button1{
 	height:100%;
 	weight:80px;
@@ -35,6 +37,7 @@ div#main {
     border-radius: 5px;
 }
 
+/*「未完了」ボタン */
 .button2{
 	height:100%;
 	width:100px;
@@ -46,6 +49,7 @@ div#main {
     border-radius: 5px;
 }
 
+/*「完了」ボタン */
 .button3{
 	height:100%;
 	width:100px;
@@ -63,6 +67,7 @@ div#main {
     border-radius: 5px;
 }
 
+/*入力フォームの枠の設定 */
 div#input
 {
     background-color: White;
@@ -74,14 +79,31 @@ div#input
   border-color: #AAA;
 }
 
+/*リスト要素の枠の設定 */
 div#ListElement
 {
-	margin: 0px 30px 10px 0px;
+	margin: 0px auto 10px 0px;
+	width: 530;
   background-color: White;
-  padding: 1px 30px;
+  padding: 10px 30px;
   border-style: solid;
   border-width: 1px 2px 2px 1px;
   border-color: #AAA;
+}
+
+.ToDoName{
+	font-weight: bold;
+}
+
+/*「ToDoが作成されていません。」のエラー文 */
+.error0{
+	color: #FF5050;
+	font-weight: bold;
+}
+
+/*入力フォームにおけるエラー文 */
+.error{
+	color: #FF5050;
 }
 
 .table{
