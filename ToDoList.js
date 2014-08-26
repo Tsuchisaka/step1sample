@@ -38,16 +38,18 @@ function saveText() {
     if (checkName(name.val()) != true) {
 		return;
     }
-    else if (checkDate(limit.val()) != true) {
+    else if (checkLimit(limit.val()) != true) {
 		return;
     }
 	var date = new Date();
-	var datestring = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getHours() + "/" + date.getMinutes() + "/" + date.getMinutes();
+	var datestring = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getHours() + "/" + date.getMinutes() + "/" + date.getSeconds();
     var todo = [name.val(), limit.val(), datestring, "未完了"];
 	console.log(todo);
     todo = JSON.stringify(todo);
 	console.log(todo);
     localStorage.setItem(getToDoListKey(), todo);
+	name.val("");
+	limit.val("");
 }
 
 function getToDoListKey(){
@@ -63,8 +65,16 @@ function showText() {
     for (var i = 0, len = localStorage.length; i < len; i++) {
         key = localStorage.key(i);
         value = localStorage.getItem(key);
+		console.log(key + " : " + value);
+        //writeToDoListForm(value);
+    }
+	for (var i = localStorage.length - 1; i >= 0; i--) {
+		key = i;
+        value = localStorage.getItem(key);
+		console.log(key + " : " + value);
         writeToDoListForm(value);
     }
+	
 	if(localStorage.length <= 0){
 		html.push('<p id = "error0">ToDoが作成されていません。</p>');
 	}
@@ -91,7 +101,9 @@ function writeToDoListForm(text){
 	html.push('</colgroup>\n');
 	html.push('<tr>\n');
 	html.push('<td colspan = 2 class = "TodoName">' + line[0] + '</td>');
-	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="' + id + '" class="button2"></td>');
+	var num = 2;
+	if(line[3]=="完了")num = 3;
+	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="' + id + '" class="button' + num + '"></td>');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
     html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
@@ -138,6 +150,7 @@ function checkName(text) {
     // 文字数が0または30以上は不可
 	var error1 = $("#error1");
 	var html = [];
+	error1.children().remove();
     if (0 === text.length || 30 < text.length) {
 		html.push('<p class="error">ToDo名は1～30文字の範囲で入力してください。</p>');
 		error1.append(html.join(''));
@@ -163,10 +176,11 @@ function checkName(text) {
     return true;
 }
 
-function checkDate(text){
-	//textの半角スラッシュを全角スラッシュに置き換える
+function checkLimit(text){
 	var error2 = $("#error2");
 	var html = [];
+	error2.children().remove();
+	//textの半角スラッシュを全角スラッシュに置き換える
 	var str = text.replace(/\u002f/g, "\uff0f");
 	
 	// 文字数が0または30以上は不可
@@ -179,11 +193,49 @@ function checkDate(text){
 	console.log(str);
 	// 文字が日付でなければ不可
 	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)){
-		
+		//日付をチェックする
+		var date = text.split("/");
+		var result = checkDate(date[0],date[1],date[2]);
+		if(result < 0){
+			//過去の日付であれば不可
+			html.push('<p class="error">過去の日付です。</p>');
+			error2.append(html.join(''));
+			return false;
+		}else if(result > 0){
+			//存在しない日付であれば不可
+			html.push('<p class="error">存在しない日付です。</p>');
+			error2.append(html.join(''));
+			return false;
+		}
 	}else{
 		html.push('<p class="error">yyyy/mm/ddの形式で入力してください。</p>');
 		error2.append(html.join(''));
 		return false;
 	}
 	return true;
+}
+
+function checkDate(year, month, day){
+	var now = new Date();
+	var nowY = now.getFullYear();
+	var nowM = now.getMonth() + 1;
+	var nowD = now.getDate();
+	var lastday = 31;
+	
+	if(month == 2){
+		lastday = 28 + Math.floor(1 / (year % 4 + 1)) * (1 - Math.floor(1 / (year % 100 + 1))) + Math.floor(1 / (year % 400 + 1));
+	}else if((month < 8 && month %2 == 1) || (month >= 8 && month %2 == 0)){
+		lastday = 31;
+	}else{
+		lastday = 30;
+	}
+	//存在しない日付であれば1を返す
+	if(month <= 0 || month > 12) return 1;
+	if(day <= 0 || day > lastday) return 1;
+	
+	if(year < nowY || (year == nowY && month < nowM) || (year == nowY && month == nowM && day < nowD)){
+		return -1;
+	}
+	
+	return 0;
 }
