@@ -97,8 +97,11 @@ function escapeText(text) {
 // 入力チェックを行う
 function checkName(text) {
     // 文字数が0または30以上は不可
+	var error1 = $("#error1");
+	var html = [];
     if (0 === text.length || 30 < text.length) {
-        alert("文字数は1〜20字にしてください");
+		html.push('<p class="error">ToDo名は1～30文字の範囲で入力してください。</p>');
+		error1.append(html.join(''));
 		console.log("checkName error");
         return false;
     }
@@ -107,10 +110,12 @@ function checkName(text) {
     var length = localStorage.length;
     for (var i = 0; i < length; i++) {
         var key = localStorage.key(i);
-        var value = localStorage.getItem(key);
+        var value = JSON.parse(localStorage.getItem(key));
+		console.log(text + " - " + value[0]);
         // 内容が一致するものがあるか比較
-        if (text === value) {
-            alert("同じ内容は避けてください");
+        if (text === value[0]) {
+            html.push('<p class="error">そのToDo名は既に使用されています。</p>');
+			error1.append(html.join(''));
             return false;
         }
     }
@@ -121,11 +126,14 @@ function checkName(text) {
 
 function checkDate(text){
 	//textの半角スラッシュを全角スラッシュに置き換える
+	var error2 = $("#error2");
+	var html = [];
 	var str = text.replace(/\u002f/g, "\uff0f");
 	
 	// 文字数が0または30以上は不可
     if (0 === str.length || 30 < str.length) {
-        alert("文字数は1〜20字にしてください");
+        html.push('<p class="error">期限は1～30文字の範囲で入力してください。</p>');
+		error2.append(html.join(''));
         return false;
     }
 	
@@ -134,7 +142,8 @@ function checkDate(text){
 	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)){
 		
 	}else{
-		alert("おかしな日付です");
+		html.push('<p class="error">yyyy/mm/ddの形式で入力してください。</p>');
+		error2.append(html.join(''));
 		return false;
 	}
 	return true;
