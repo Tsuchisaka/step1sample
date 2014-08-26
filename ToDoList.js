@@ -31,7 +31,9 @@ function saveText() {
     else if (checkDate(limit.val()) != true) {
 		return;
     }
-    var todo = [name.val(), limit.val()];
+	var date = new Date();
+	var datestring = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getHours() + "/" + date.getMinutes() + "/" + date.getMinutes();
+    var todo = [name.val(), limit.val(), datestring, "未完了"];
 	console.log(todo);
     todo = JSON.stringify(todo);
 	console.log(todo);
@@ -66,6 +68,7 @@ function writeToDoListForm(text){
 	line = JSON.parse(line);
 	console.log(line);
 	var limit = line[1].split("/");
+	var inputday = line[2].split("/");
 	var html = [];
 	html.push('<div id="ListElement">\n');
     html.push('<table class="table">\n');
@@ -76,13 +79,13 @@ function writeToDoListForm(text){
 	html.push('</colgroup>\n');
 	html.push('<tr>\n');
 	html.push('<td colspan = 2 class = "TodoName">' + line[0] + '</td>');
-	html.push('<td rowspan=3><input type="button" value="未完了" id="completeButton" class="button2"></td>');
+	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="completeButton" class="button2"></td>');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
     html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
-    html.push('<td class = "Dates">作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+    html.push('<td class = "Dates">作成日：</td><td>' + inputday[0] + '年' + inputday[1] + '月' + inputday[2] + '日' + '</td>\n');
 	html.push('</tr>\n');
     html.push('</table>\n');
     html.push('</div>\n');
