@@ -53,6 +53,9 @@ function showText() {
         value = localStorage.getItem(key);
         writeToDoListForm(value);
     }
+	if(localStorage.length <= 0){
+		html.push('<p id = "error0">ToDoが作成されていません。</p>');
+	}
     list.append(html.join(''));
 }
 
@@ -64,14 +67,22 @@ function writeToDoListForm(text){
 	console.log(line);
 	var limit = line[1].split("/");
 	var html = [];
-	html.push('<div id="ListElement"><h1>' + line[0] +'</h1>\n');
-    html.push('<table>\n');
+	html.push('<div id="ListElement">\n');
+    html.push('<table class="table">\n');
+	html.push('<colgroup>\n');
+	html.push('<col style="width:60px;">');
+	html.push('<col style="width:230px;>');
+	html.push('<col style="width:100px;>');
+	html.push('</colgroup>\n');
 	html.push('<tr>\n');
-    html.push('<td>期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
-	html.push('<td rowspan=2><input type="button" value="未完了" id="completeButton" class="button2"></td>');
+	html.push('<td colspan = 2 class = "TodoName">' + line[0] + '</td>');
+	html.push('<td rowspan=3><input type="button" value="未完了" id="completeButton" class="button2"></td>');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
-    html.push('<td>作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+    html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+	html.push('</tr>\n');
+	html.push('<tr>\n');
+    html.push('<td class = "Dates">作成日：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
 	html.push('</tr>\n');
     html.push('</table>\n');
     html.push('</div>\n');

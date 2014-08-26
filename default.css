@@ -58,16 +58,23 @@ div#input
     margin: 0px 0px 20px 0px;
     font-weight: bolder;
     padding: 5px;
+	border-style: solid;
+  border-width: 1px 2px 2px 1px;
+  border-color: #AAA;
 }
 
 div#ListElement
 {
-	margin: 0px 30px auto 20px;
+	margin: 0px 30px 10px 0px;
   background-color: White;
   padding: 1px 30px;
   border-style: solid;
-  border-width: 0px 2px 2px 1px;
+  border-width: 1px 2px 2px 1px;
   border-color: #AAA;
+}
+
+.table{
+		table-layout:fixed;
 }
 
 form#form
