@@ -90,7 +90,8 @@ function writeToDoListForm(text){
 	console.log(line);
 	line = JSON.parse(line);
 	console.log(line);
-	var limit = line[1].split("/");
+	var divide = / |:|\/|　|：/;
+	var limit = line[1].split(divide);
 	var inputday = line[2].split("/");
 	var html = [];
 	var id = "completeButton/" + line[2];
@@ -106,13 +107,21 @@ function writeToDoListForm(text){
 	html.push('<td colspan = 2 class = "TodoName">' + line[0] + '</td>');
 	var num = 2;
 	if(line[3]=="完了")num = 3;
-	html.push('<td rowspan=3><input type="button" value="' + line[3] + '" id="' + id + '" class="button' + num + '"></td>');
+	html.push('<td rowspan=4><input type="button" value="' + line[3] + '" id="' + id + '" class="button' + num + '"></td>');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
-    html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + '</td>\n');
+	if(limit.length == 3)
+	html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日</td>\n');
+	else if(limit.length == 4)
+	html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + limit[3] + '時</td>\n');
+	else
+	html.push('<td class="Dates">期限：</td><td>' + limit[0] + '年' + limit[1] + '月' + limit[2] + '日' + limit[3] + '時' + limit[4] + '分</td>\n');
 	html.push('</tr>\n');
 	html.push('<tr>\n');
     html.push('<td class = "Dates">作成日：</td><td>' + inputday[0] + '年' + inputday[1] + '月' + inputday[2] + '日' + '</td>\n');
+	html.push('</tr>\n');
+	html.push('<tr>\n');
+	html.push('<td class = "Dates">残り：</td><td>' + getLeftTime(line[1]) + '</td>\n');
 	html.push('</tr>\n');
     html.push('</table>\n');
     html.push('</div>\n');
@@ -197,10 +206,15 @@ function checkLimit(text){
 	
 	console.log(str);
 	// 文字が日付でなければ不可
-	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)){
+	if(str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9]$/)
+	|| str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9] [0-2]?[0-9]$/)
+	||str.match(/^[0-9]?[0-9]?[0-9]?[0-9]\uff0f[01]?[0-9]\uff0f[0-3]?[0-9] [0-2]?[0-9]:[0-6]?[0-9]$/)){
 		console.log(str + "は日付でした");
+		var divide = / |:|　|：/;
+		var info = text.split(divide);
+		var len = info.length;
 		//日付をチェックする
-		var date = text.split("/");
+		var date = info[0].split("/");
 		var result = checkDate(date[0],date[1],date[2]);
 		console.log("checkDate(" + date[0] + ", " + date[1] + ", " + date[2] + ") = " + result);
 		if(result < 0){
@@ -223,6 +237,21 @@ function checkLimit(text){
 		error2.append(html.join(''));
 		return false;
 	}
+	
+	if(len == 2){
+		if(info[1] < 0 || info[1] > 24){
+			html.push('<p class="error">存在しない時間です。</p>');
+			error2.append(html.join(''));
+			return false;
+		}
+	}else if(len==3){
+		if(info[1] < 0 || info[1] > 24 || info[2] < 0 || info[2] > 60){
+			html.push('<p class="error">存在しない時間です。</p>');
+			error2.append(html.join(''));
+			return false;
+		}
+	}
+	
 	return true;
 }
 
@@ -259,6 +288,7 @@ function checkDate(year, month, day){
 //1秒ごとに呼び出される関数
 function oneSecClock(){
 	showNowTime();
+	showText();
 }
 
 function showNowTime(){
@@ -269,5 +299,33 @@ function showNowTime(){
     var html = [];
 	html.push('<p class="center">' + datestring + '</p>');
 	nowTime.append(html.join(''));
+}
+
+function getLeftTime(text){
+	var date = new Date();
+	var str = text.split(/ |:|\/|　|：/);
+	console.log(str);
+	var lefttime;
+	if(str.length == 3)lefttime= new Date(str[0],str[1]-1,str[2]);
+	else if(str.length ==4)lefttime= new Date(str[0],str[1]-1,str[2],str[3]);
+	else lefttime= new Date(str[0],str[1]-1,str[2],str[3],str[4]);
+	console.log(date);
+	console.log(lefttime);
+	lefttime -= date;
+	var sec = Math.floor(lefttime / 1000);
+	console.log(sec);
+	var day = Math.floor(sec / 60 /60 /24);
+	var hour = Math.floor((sec - day * 24) / 60 / 60);
+	var min = Math.floor((sec - day*24 - hour*60)/60);
+	sec = Math.floor((sec - day*24-hour*60 -min*60));
+	var left = new Date(0,0,0,0,0,0,lefttime);
+	var datestring = "";
+	console.log(left);
+	if(day > 0)datestring+=day+"日";
+	if(hour > 0)datestring+=hour+"時間";
+	if(min>0)datestring+=min+"分";
+	if(sec>=0)datestring+=sec+"秒";
+	else datestring="0秒";
+	return datestring;
 }
 
